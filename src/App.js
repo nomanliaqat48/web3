@@ -2,6 +2,8 @@
 
 import React, { useContext } from "react";
 import { Web3Context } from "./context/Web3Context";
+import { switchNetworkToChainId } from "./helpers/web3";
+import Button from "react-bootstrap/Button";
 import "./App.css";
 
 const App = () => {
@@ -11,17 +13,38 @@ const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Web3 Project</h1>
+        <h1>{account ? "Metamask Connected Successfully" : "Web3 Project"}</h1>
         {error && <p className="error">{error}</p>}
         {web3 ? (
           <>
             {account && balance ? (
               <>
-                <p>Connected Account: {account}</p>
-                <p>Account Balance: {parseFloat(balance).toFixed(4)}</p>
+                <p>
+                  Connected Address:{" "}
+                  {account.length > 0 && `${account.substring(0, 20)}........`}
+                </p>
+                <p>Account Balance: {parseFloat(balance).toFixed(6)} ETH</p>
+                <div className="mt-4">
+                  <Button
+                    variant="primary"
+                    onClick={() => switchNetworkToChainId("polygon")}
+                  >
+                    Switch to Polygon
+                  </Button>
+                </div>
+                <div className="mt-3">
+                  <Button
+                    variant="primary"
+                    onClick={() => switchNetworkToChainId("sepolia")}
+                  >
+                    Switch to Sepolia
+                  </Button>
+                </div>
               </>
             ) : (
-              <button onClick={connectWallet}>Connect MetaMask</button>
+              <Button variant="primary" onClick={connectWallet}>
+                Connect MetaMask
+              </Button>
             )}
           </>
         ) : (
