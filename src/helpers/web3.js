@@ -80,3 +80,29 @@ export const getAccountBalance = async (account) => {
     toast.error(err?.message || err);
   }
 };
+
+export const sendTransaction = async ({ from, to, amount, account }) => {
+  let web3 = await getWeb3();
+  const value = web3.utils.toWei(amount, "ether");
+  try {
+    const txHash = await web3.eth.sendTransaction({
+      from,
+      to,
+      value,
+    });
+    console.log("Transaction Successful!: ", txHash);
+    const result = [];
+    const block = await web3.eth.getBlock(txHash.blockNumber, true);
+    if (block && block.transactions) {
+      block.transactions.forEach((transaction) => {
+        if (transaction.from.toLowerCase() === account.toLowerCase()) {
+          result.push(transaction);
+        }
+      });
+    }
+    return result;
+  } catch (err) {
+    console.error("Transaction failed", err);
+    toast.error(err?.data?.message || err?.message || err);
+  }
+};
