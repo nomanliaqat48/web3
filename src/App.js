@@ -1,45 +1,36 @@
 // src/App.js
 
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Web3Context } from "./context/Web3Context";
-import { switchNetworkToChainId } from "./helpers/web3";
 import Button from "react-bootstrap/Button";
+import SwitchNetwork from "./components/switchNetwork";
 import "./App.css";
+import SendTransaction from "./components/sendTransaction";
 
 const App = () => {
   const { web3, account, balance, connectWallet, error } =
     useContext(Web3Context);
 
+  const [showTransactionForm, setShowTransactionForm] = useState(false);
+
   return (
     <div className="App">
       <header className="App-header">
-        <h1>{account ? "Metamask Connected Successfully" : "Web3 Project"}</h1>
+        <h1>{account ? showTransactionForm ? "Transaction" : "Metamask Connected Successfully" : "Web3 Project"}</h1>
         {error && <p className="error">{error}</p>}
         {web3 ? (
           <>
             {account && balance ? (
               <>
-                <p>
-                  Connected Address:{" "}
-                  {account.length > 0 && `${account.substring(0, 20)}........`}
-                </p>
-                <p>Account Balance: {parseFloat(balance).toFixed(6)} ETH</p>
-                <div className="mt-4">
-                  <Button
-                    variant="primary"
-                    onClick={() => switchNetworkToChainId("polygon")}
-                  >
-                    Switch to Polygon
-                  </Button>
-                </div>
-                <div className="mt-3">
-                  <Button
-                    variant="primary"
-                    onClick={() => switchNetworkToChainId("sepolia")}
-                  >
-                    Switch to Sepolia
-                  </Button>
-                </div>
+                {showTransactionForm ? (
+                  <SendTransaction
+                    setShowTransactionForm={() => setShowTransactionForm(false)}
+                  />
+                ) : (
+                  <SwitchNetwork
+                    setShowTransactionForm={() => setShowTransactionForm(true)}
+                  />
+                )}
               </>
             ) : (
               <Button variant="primary" onClick={connectWallet}>

@@ -16,12 +16,14 @@ export const Web3Provider = ({ children }) => {
       try {
         const web3Instance = await getWeb3();
         web3Instance && setWeb3(web3Instance);
+        // const chainId = await web3Instance.eth.getChainId();
       } catch (error) {
         console.error("Failed to load web3", error);
       }
     };
     initWeb3();
   }, []);
+
 
   const connectWallet = async () => {
     try {
